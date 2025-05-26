@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mes Notifications | HAXX</title>
+    <link rel="stylesheet" href="/css/custom.css" />
+  </head>
+  <body>
+    <%- include('../../partials/navbar') %>
+
+    <main class="notifications-container">
+      <h1>Mes Notifications</h1>
+
+      <% if(notifications && notifications.length > 0) { %> <%
+      notifications.forEach(notification => { %>
+      <div
+        class="notification-card <%= !notification.read ? 'notification-unread' : '' %>"
+      >
+        <div class="notification-content">
+          <p><%= notification.message %></p>
+          <div class="notification-date">
+            <%= new Date(notification.createdAt).toLocaleDateString('fr-FR', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+            hour: '2-digit', minute: '2-digit' }) %>
+          </div>
+          <% if(notification.event) { %>
+          <div class="notification-event">
+            <a href="/evenement/<%= notification.event._id %>">
+              Voir l'événement
+            </a>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <% }) %> <% } else { %>
+      <p>Aucune notification</p>
+      <% } %>
+    </main>
+
+    <%- include('../../partials/footer') %>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+        const body = document.body;
+
+        // Vérifier la préférence sauvegardée
+        const darkMode = localStorage.getItem("darkMode");
+
+        if (darkMode === "enabled") {
+          body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          if (themeToggle.checked) {
+            body.classList.add("dark-mode");
+            localStorage.setItem("darkMode", "enabled");
+          } else {
+            body.classList.remove("dark-mode");
+            localStorage.setItem("darkMode", null);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

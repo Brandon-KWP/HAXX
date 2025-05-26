@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= event.nom %> | HAXX</title>
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <%- include('../../partials/navbar') %>
+
+    <main class="event-detail">
+        <div class="event-header">
+            <h1><%= event.nom %></h1>
+            
+            <div class="event-info">
+                <div class="info-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>Date: <%= new Date(event.date).toLocaleDateString('fr-FR', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    }) %></span>
+                </div>
+
+                <% if(event.ville) { %>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Lieu: <%= event.ville %></span>
+                    </div>
+                <% } %>
+
+                <% if(event.places_available) { %>
+                    <div class="info-item">
+                        <i class="fas fa-users"></i>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: '<%= Math.min((event.places_available / 64) * 100, 100) %>%'">
+                                <span class="progress-text"><%= event.places_available %> places disponibles</span>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="event-content">
+            <% if(event.image) { %>
+                <img src="<%= event.image %>" alt="<%= event.nom %>" class="event-cover">
+            <% } %>
+            <div class="event-description">
+                <p><%= event.description %></p>
+            </div>
+            <div class="event-actions">
+                <% if(locals.isAuthenticated) { %>
+                    <button onclick="openRegisterModal()" class="btn-register"
+                        <%= event.places_available <= 0 ? 'disabled' : '' %>>
+                        S'inscrire à l'événement
+                    </button>
+                <% } else { %>
+                    <a href="/login" class="btn-register">Connectez-vous pour vous inscrire</a>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Modal d'inscription -->
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Confirmation d'inscription</h2>
+                <p>Voulez-vous vraiment vous inscrire à l'événement "<%= event.nom %>" ?</p>
+                <button onclick="registerForEvent('<%= event._id %>')" class="btn-register">
+                    Confirmer l'inscription
+                </button>
+            </div>
+        </div>
+
+        <a href="/evenement" class="btn-return">Retour aux événements</a>
+    </main>
+
+    <%- include('../../partials/footer') %>
+
+    <script>
+        const modal = document.getElementById('registerModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        function openRegisterModal() {
+            modal.style.display = "block";
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        async function registerForEvent(eventId) {
+            try {
+                const response = await fetch(`/evenement/${eventId}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Inscription réussie !');
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Erreur lors de l\'inscription');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de l\'inscription');
+            }
+            modal.style.display = "none";
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+
+            // Vérifier la préférence sauvegardée
+            const darkMode = localStorage.getItem('darkMode');
+                if (darkMode === 'enabled') {
+                    body.classList.add('dark-mode');
+                    themeToggle.checked = true;
+                }
+
+            themeToggle.addEventListener('change', () => {
+                if (themeToggle.checked) {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'enabled');
+                } else {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', null);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

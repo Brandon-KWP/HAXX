@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modifier mon profil | TEAM HAXX</title>
+    <link rel="stylesheet" href="/css/custom.css" />
+    <style>
+      .profile-form {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .btn-save {
+        background-color: #4caf50;
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .btn-save:hover {
+        background-color: #45a049;
+      }
+
+      .error-message {
+        color: #ff4444;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('../../partials/navbar') %>
+
+    <main class="container">
+      <div class="profile-form">
+        <h1>Modifier mon profil</h1>
+        <form id="editProfileForm" method="POST" action="/profile/edit">
+          <div class="form-group">
+            <label for="pseudo">Pseudo :</label>
+            <input
+              type="text"
+              id="pseudo"
+              name="pseudo"
+              value="<%= user.pseudo %>"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="pseudo_ubisoft">Pseudo Ubisoft :</label>
+            <input
+              type="text"
+              id="pseudo_ubisoft"
+              name="pseudo_ubisoft"
+              value="<%= user.pseudo_ubisoft %>"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="pseudo_discord">Pseudo Discord :</label>
+            <input
+              type="text"
+              id="pseudo_discord"
+              name="pseudo_discord"
+              value="<%= user.pseudo_discord %>"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email :</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value="<%= user.email %>"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Nouveau mot de passe (optionnel) :</label>
+            <input type="password" id="password" name="password" />
+          </div>
+
+          <button type="submit" class="btn-save">
+            Enregistrer les modifications
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <%- include('../../partials/footer') %>
+
+    <script>
+      document
+        .getElementById("editProfileForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            pseudo: document.getElementById("pseudo").value,
+            pseudo_ubisoft: document.getElementById("pseudo_ubisoft").value,
+            pseudo_discord: document.getElementById("pseudo_discord").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+          };
+
+          try {
+            const response = await fetch("/profile/edit", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              window.location.href = "/profile";
+            } else {
+              alert(data.message || "Erreur lors de la modification du profil");
+            }
+          } catch (error) {
+            console.error("Erreur:", error);
+            alert("Erreur lors de la modification du profil");
+          }
+        });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+        const body = document.body;
+
+        // Vérifier la préférence sauvegardée
+        const darkMode = localStorage.getItem("darkMode");
+        if (darkMode === "enabled") {
+          body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          if (themeToggle.checked) {
+            body.classList.add("dark-mode");
+            localStorage.setItem("darkMode", "enabled");
+          } else {
+            body.classList.remove("dark-mode");
+            localStorage.setItem("darkMode", null);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TEAM HAXX</title>
+    <link rel="stylesheet" href="/css/custom.css" />
+  </head>
+  <body>
+    <header><%- include('../../partials/navbar') %></header>
+    <main>
+      <div class="signup">
+        <h2>Inscription</h2>
+        <form action="/register" method="post" id="signupForm">
+          <div class="input-group">
+            <label for="pseudo">Pseudo :</label>
+            <input type="text" id="pseudo" name="pseudo" required />
+          </div>
+          <div class="input-group">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="input-group">
+            <label for="pseudo_discord">Pseudo Discord :</label>
+            <input
+              type="text"
+              id="pseudo_discord"
+              name="pseudo_discord"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="pseudo_ubisoft">Pseudo Ubisoft :</label>
+            <input
+              type="text"
+              id="pseudo_ubisoft"
+              name="pseudo_ubisoft"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <button type="submit" class="btn">S'inscrire</button>
+        </form>
+      </div>
+    </main>
+    <footer><%- include('../../partials/footer') %></footer>
+    <script>
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            pseudo: document.getElementById("pseudo").value,
+            pseudo_ubisoft: document.getElementById("pseudo_ubisoft").value,
+            pseudo_discord: document.getElementById("pseudo_discord").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+          };
+
+          try {
+            const response = await fetch("/register", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              window.location.href = data.redirect;
+            } else {
+              alert(data.message || "Erreur lors de l'inscription");
+            }
+          } catch (error) {
+            console.error("Erreur:", error);
+            alert("Erreur lors de l'inscription");
+          }
+        });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+        const body = document.body;
+
+        // Vérifier la préférence sauvegardée
+        const darkMode = localStorage.getItem("darkMode");
+        if (darkMode === "enabled") {
+          body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          if (themeToggle.checked) {
+            body.classList.add("dark-mode");
+            localStorage.setItem("darkMode", "enabled");
+          } else {
+            body.classList.remove("dark-mode");
+            localStorage.setItem("darkMode", null);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
