@@ -1,0 +1,13 @@
+<div class="event-card">
+    <% if(event.image) { %>
+        <img src="<%= event.image %>" alt="<%= event.title %>">
+    <% } %>
+    <div class="event-info">
+        <h2><%= event.title %></h2>
+        <p class="event-date"><%= new Date(event.date).toLocaleDateString() %></p>
+        <p class="event-description"><%= event.description %></p>
+        <div class="event-actions">
+            <a href="/evenement/<%= event._id %>" class="btn btn-primary">Voir plus</a>
+        </div>
+    </div>
+</div>

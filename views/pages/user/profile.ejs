@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mon Profil | HAXX</title>
+    <link rel="stylesheet" href="/css/custom.css" />
+  </head>
+  <body>
+    <%- include('../../partials/navbar') %>
+
+    <main class="profile-container">
+      <h1>Mon Profil</h1>
+
+      <div class="profile-info">
+        <p><strong>Pseudo:</strong> <%= user.pseudo %></p>
+        <p><strong>Email:</strong> <%= user.email %></p>
+
+        <a href="/profile/edit" class="btn-edit">Modifier mon profil</a>
+      </div>
+
+      <% if(user.events && user.events.length > 0) { %>
+      <div class="user-events">
+        <h2>Mes événements</h2>
+        <div class="events-list">
+          <% user.events.forEach(event => { %>
+          <div class="event-card">
+            <h3><%= event.nom %></h3>
+            <p><%= event.description %></p>
+            <a href="/evenement/<%= event._id %>" class="btn-view"
+              >Voir détails</a
+            >
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+    </main>
+
+    <%- include('../../partials/footer') %>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+        const body = document.body;
+
+        // Vérifier la préférence sauvegardée
+        const darkMode = localStorage.getItem("darkMode");
+
+        if (darkMode === "enabled") {
+          body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          if (themeToggle.checked) {
+            body.classList.add("dark-mode");
+            localStorage.setItem("darkMode", "enabled");
+          } else {
+            body.classList.remove("dark-mode");
+            localStorage.setItem("darkMode", null);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

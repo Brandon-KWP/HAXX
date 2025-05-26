@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Événements | HAXX</title>
+    <link rel="stylesheet" href="/css/custom.css" />
+  </head>
+  <body>
+    <%- include('../../partials/navbar') %>
+
+    <main class="events-container">
+      <h1>Événements</h1>
+
+      <div class="events-grid">
+        <% if(events && events.length > 0) { %> <% events.forEach(event => { %>
+        <div class="event-card">
+          <% if(event.image) { %>
+          <img
+            src="<%= event.image %>"
+            alt="<%= event.nom %>"
+            class="event-thumbnail"
+          />
+          <% } %>
+          <h2><%= event.nom %></h2>
+          <time><%= new Date(event.date).toLocaleDateString('fr-FR') %></time>
+          <p><%= event.description %></p>
+          <a href="/evenement/<%= event._id.toString() %>" class="btn-details"
+            >Voir les détails</a
+          >
+        </div>
+        <% }) %> <% } else { %>
+        <p class="no-events">Aucun événement disponible</p>
+        <% } %>
+      </div>
+    </main>
+
+    <%- include('../../partials/footer') %>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+        const body = document.body;
+
+        // Vérifier la préférence sauvegardée
+        const darkMode = localStorage.getItem("darkMode");
+        if (darkMode === "enabled") {
+          body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          if (themeToggle.checked) {
+            body.classList.add("dark-mode");
+            localStorage.setItem("darkMode", "enabled");
+          } else {
+            body.classList.remove("dark-mode");
+            localStorage.setItem("darkMode", null);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TEAM HAXX</title>
+    <link rel="stylesheet" href="/css/custom.css" />
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+
+    <main>
+      <h1>TEAM HAXX</h1>
+      <h2>QUI SOMME NOUS</h2>
+      <p>
+        À l'origine, la team HAXX a été créée dans le but de nous réunir entre
+        amis et passionnés de jeux vidéo, mais a commencé à prendre
+        véritablement sens dès son introduction au sein du jeu Trackmania 2020,
+        sur lequel nous avons pu créer une véritable petite communauté de
+        joueurs aux profils variés, en proposant divers projets et circuits afin
+        de nous réunir autour de supports communs en offrant différents
+        challenge aux joueurs. <br /><br />
+        C'est d'ailleurs grâce à la prise de volume du club HAXX et à sa
+        notoriété grandissante que nous avons pu organiser notre première
+        compétition officielle en Septembre 2023, en proposant grâce à l'aide de
+        nombreux membres de la communauté un challenge de 25 circuits à rouler
+        et optimiser, afin d'en obtenir les records dans un premier temps, puis
+        de se confronter les uns aux autres dans un second, avec à la clé une
+        récompense s'élevant à 500€ au total, notamment grâce à la participation
+        d'un généreux sponsor, répartis auprès des meilleurs joueurs.
+        <br /><br />
+        Aujourd'hui, l'équipe continue de gagner en notoriété, et propose
+        régulièrement des projets de plus ou moins grande ampleur en attendant
+        le lancement des prochains projets et évènements, qu'ils soient
+        compétitifs ou communautaires.
+      </p>
+    </main>
+
+    <%- include('../partials/footer') %>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+        const body = document.body;
+
+        // Vérifier la préférence sauvegardée
+        const darkMode = localStorage.getItem("darkMode");
+        if (darkMode === "enabled") {
+          body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          if (themeToggle.checked) {
+            body.classList.add("dark-mode");
+            localStorage.setItem("darkMode", "enabled");
+          } else {
+            body.classList.remove("dark-mode");
+            localStorage.setItem("darkMode", null);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

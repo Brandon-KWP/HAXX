@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Événements | Admin</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <style>
+      .btn-add {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 20px 0;
+        font-size: 16px;
+      }
+
+      .btn-add:hover {
+        background-color: #45a049;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        resize: vertical;
+      }
+
+      .form-group input[type="number"] {
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('../../partials/navbar-admin') %>
+
+    <main class="admin-container">
+      <h1>Gestion des Événements</h1>
+
+      <div class="events-list">
+        <% if(events && events.length > 0) { %> <% events.forEach(event => { %>
+        <div class="event-card">
+          <h3><%= event.title %></h3>
+          <p><%= event.description %></p>
+          <p class="event-date">
+            Date: <%= new Date(event.date).toLocaleDateString() %>
+          </p>
+          <div class="event-actions">
+            <button
+              onclick="openEditModal('<%= event._id %>', '<%= event.title %>', '<%= event.description %>', '<%= event.date %>')"
+              class="btn-edit"
+            >
+              Modifier
+            </button>
+            <button
+              onclick="deleteEvent('<%= event._id %>')"
+              class="btn-delete"
+            >
+              Supprimer
+            </button>
+          </div>
+        </div>
+        <% }) %> <% } else { %>
+        <p>Aucun événement disponible</p>
+        <% } %>
+      </div>
+      <button onclick="openAddModal()" class="btn-add">
+        Ajouter un événement
+      </button>
+
+      <!-- Modal pour éditer un événement -->
+      <div id="editModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Modifier l'événement</h2>
+          <form id="editEventForm">
+            <input type="hidden" id="eventId" />
+            <div class="form-group">
+              <label for="title">Titre :</label>
+              <input type="text" id="title" required />
+            </div>
+            <div class="form-group">
+              <label for="description">Description :</label>
+              <textarea id="description" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="date">Date :</label>
+              <input type="datetime-local" id="date" required />
+            </div>
+            <button type="submit" class="btn-submit">Enregistrer</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal pour ajouter un événement -->
+      <div id="addModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeAddModal()">&times;</span>
+          <h2>Ajouter un événement</h2>
+          <form id="addEventForm">
+            <div class="form-group">
+                <label for="newTitle">Nom :</label>
+                <input type="text" id="newTitle" name="nom" required />
+            </div>
+            <div class="form-group">
+                <label for="newImage">Image (URL) :</label>
+                <input type="url" id="newImage" name="image" required />
+            </div>
+            <div class="form-group">
+                <label for="newDescription">Description :</label>
+                <textarea id="newDescription" name="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="newDate">Date :</label>
+                <input type="datetime-local" id="newDate" name="date" required />
+            </div>
+            <div class="form-group">
+                <label for="newCity">Ville :</label>
+                <input type="text" id="newCity" name="ville" />
+            </div>
+            <div class="form-group">
+                <label for="newPlaces">Places disponibles :</label>
+                <input type="number" id="newPlaces" name="places_available" min="0" />
+            </div>
+            <button type="submit" class="btn-submit">Créer l'événement</button>
+        </form>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const modal = document.getElementById("editModal");
+      const span = document.getElementsByClassName("close")[0];
+
+      function openEditModal(id, title, description, date) {
+        document.getElementById("eventId").value = id;
+        document.getElementById("title").value = title;
+        document.getElementById("description").value = description;
+        document.getElementById("date").value = new Date(date)
+          .toISOString()
+          .slice(0, 16);
+        modal.style.display = "block";
+      }
+
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      document.getElementById("editEventForm").onsubmit = async function (e) {
+        e.preventDefault();
+        const id = document.getElementById("eventId").value;
+        const formData = {
+          title: document.getElementById("title").value,
+          description: document.getElementById("description").value,
+          date: document.getElementById("date").value,
+        };
+
+        try {
+          const response = await fetch(`/admin/events/edit/${id}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+            location.reload();
+          } else {
+            alert("Erreur lors de la modification");
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de la modification");
+        }
+      };
+
+      async function deleteEvent(id) {
+        if (confirm("Êtes-vous sûr de vouloir supprimer cet événement ?")) {
+          try {
+            const response = await fetch(`/admin/events/delete/${id}`, {
+              method: "POST",
+            });
+
+            if (response.ok) {
+              location.reload();
+            } else {
+              alert("Erreur lors de la suppression");
+            }
+          } catch (error) {
+            console.error("Erreur:", error);
+            alert("Erreur lors de la suppression");
+          }
+        }
+      }
+      function openAddModal() {
+        document.getElementById("addModal").style.display = "block";
+      }
+
+      function closeAddModal() {
+        document.getElementById("addModal").style.display = "none";
+      }
+
+      document.getElementById("addEventForm").onsubmit = async function (e) {
+        e.preventDefault();
+        console.log("Formulaire soumis"); // Pour déboguer
+
+        const formData = {
+          nom: document.getElementById("newTitle").value,
+          image: document.getElementById("newImage").value,
+          description: document.getElementById("newDescription").value,
+          date: document.getElementById("newDate").value,
+          ville: document.getElementById("newCity").value,
+          places_available: parseInt(document.getElementById("newPlaces").value) || 0
+        };
+
+        console.log("Données à envoyer:", formData); // Pour déboguer
+
+        try {
+          const response = await fetch("/admin/events/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+          });
+
+          console.log("Réponse reçue:", response); // Pour déboguer
+
+          if (response.ok) {
+            closeAddModal();
+            location.reload();
+          } else {
+            const data = await response.json();
+            alert(data.message || "Erreur lors de la création de l'événement");
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de la création de l'événement");
+        }
+      };
+
+      // Modifier le window.onclick existant
+      window.onclick = function (event) {
+        if (event.target == document.getElementById("editModal")) {
+          document.getElementById("editModal").style.display = "none";
+        }
+        if (event.target == document.getElementById("addModal")) {
+          document.getElementById("addModal").style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>

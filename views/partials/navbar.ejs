@@ -1,0 +1,32 @@
+<nav>
+  <ul class="navbar">
+    <a href="/">
+      <img class="navbar-img" src="/img/logo.png" alt="HAXX" />
+    </a>
+    <li><a href="/">ACCUEIL</a></li>
+    <li><a href="/membres">MEMBRES</a></li>
+    <li><a href="/project">PROJETS</a></li>
+    <li><a href="/evenement">ÉVÉNEMENTS</a></li>
+    <div class="theme-switch">
+      <label>
+        <input type="checkbox" id="theme-toggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <% if (isAuthenticated) { %>
+    <div class="navbar-user-status">
+      <span class="connected-status">Connecté <%= currentUser.pseudo %></span>
+      <% if (currentUser.role === 'admin') { %>
+      <li><a href="/admin/dashboard">DASHBOARD</a></li>
+      <% } %>
+      <li><a href="/profile">PROFIL</a></li>
+      <li><a href="/notifications">NOTIFICATIONS</a></li>
+      <li><a href="/logout">DÉCONNEXION</a></li>
+    </div>
+    <% } else { %>
+    <li><a href="/register">INSCRIPTION</a></li>
+    <li><a href="/login">CONNEXION</a></li>
+    <% } %>
+  </ul>
+</nav>

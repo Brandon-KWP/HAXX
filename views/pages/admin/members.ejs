@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/admin.css" />
+    <title>Gestion des Membres</title>
+    <style>
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 8px;
+        position: relative;
+      }
+
+      .close {
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <%- include('../../partials/navbar-admin') %>
+      <h1>Tableau de Bord Administrateur</h1>
+    </header>
+
+    <main>
+      <h2>Gestion des Membres</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% members.forEach(member => { %>
+          <tr>
+            <td><%= member.id %></td>
+            <td><%= member.name %></td>
+            <td><%= member.email %></td>
+            <td>
+              <button
+                onclick="openEditModal('<%= member.id %>', '<%= member.name %>', '<%= member.email %>')"
+                class="btn-edit"
+              >
+                Modifier
+              </button>
+              <form
+                action="/admin/members/delete/<%= member.id %>"
+                method="POST"
+                style="display: inline"
+              >
+                <button type="submit" class="btn-delete">Supprimer</button>
+              </form>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <button onclick="openAddModal()" class="btn-add">
+        Ajouter un Membre
+      </button>
+    </main>
+
+    <!-- Modal d'édition -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Modifier le membre</h2>
+        <form id="editForm">
+          <input type="hidden" id="memberId" name="id" />
+          <div class="form-group">
+            <label for="name">Nom :</label>
+            <input type="text" id="memberName" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email :</label>
+            <input type="email" id="memberEmail" name="email" required />
+          </div>
+          <button type="submit" class="btn-submit">Sauvegarder</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- modal nouveau -->
+    <div id="addModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeAddModal()">&times;</span>
+        <h2>Ajouter un nouveau membre</h2>
+        <form id="addForm">
+          <div class="form-group">
+            <label for="newName">Nom :</label>
+            <input type="text" id="newName" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="newEmail">Email :</label>
+            <input type="email" id="newEmail" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="newPassword">Mot de passe :</label>
+            <input type="password" id="newPassword" name="password" required />
+          </div>
+          <button type="submit" class="btn-submit">Ajouter</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- modal ajout -->
+    <div id="addModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeAddModal()">&times;</span>
+        <h2>Ajouter un nouveau membre</h2>
+        <form id="addForm">
+          <div class="form-group">
+            <label for="newName">Nom :</label>
+            <input type="text" id="newName" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="newEmail">Email :</label>
+            <input type="email" id="newEmail" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="newPassword">Mot de passe :</label>
+            <input type="password" id="newPassword" name="password" required />
+          </div>
+          <button type="submit" class="btn-submit">Ajouter</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+    <script>
+      const modal = document.getElementById("editModal");
+      const span = document.getElementsByClassName("close")[0];
+
+      function openEditModal(id, name, email) {
+        document.getElementById("memberId").value = id;
+        document.getElementById("memberName").value = name;
+        document.getElementById("memberEmail").value = email;
+        modal.style.display = "block";
+      }
+
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      document.getElementById("editForm").onsubmit = async function (e) {
+        e.preventDefault();
+
+        const formData = {
+          id: document.getElementById("memberId").value,
+          name: document.getElementById("memberName").value,
+          email: document.getElementById("memberEmail").value,
+        };
+
+        try {
+          const response = await fetch(`/admin/members/edit/${formData.id}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+            modal.style.display = "none";
+            window.location.reload();
+          } else {
+            const data = await response.json();
+            alert(data.message || "Erreur lors de la modification");
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de la modification");
+        }
+      };
+
+      function openAddModal() {
+        document.getElementById("addModal").style.display = "block";
+      }
+
+      function closeAddModal() {
+        document.getElementById("addModal").style.display = "none";
+      }
+
+      document.getElementById("addForm").onsubmit = async function (e) {
+        e.preventDefault();
+
+        const formData = {
+          name: document.getElementById("newName").value,
+          email: document.getElementById("newEmail").value,
+          password: document.getElementById("newPassword").value,
+        };
+
+        try {
+          const response = await fetch("/admin/members/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+            document.getElementById("addModal").style.display = "none";
+            window.location.reload();
+          } else {
+            const data = await response.json();
+            alert(data.message || "Erreur lors de l'ajout du membre");
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de l'ajout du membre");
+        }
+      };
+
+      // Fermer la modal si on clique en dehors
+      window.onclick = function (event) {
+        if (event.target == document.getElementById("addModal")) {
+          document.getElementById("addModal").style.display = "none";
+        }
+        if (event.target == document.getElementById("editModal")) {
+          document.getElementById("editModal").style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>
