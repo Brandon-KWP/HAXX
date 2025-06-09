@@ -267,5 +267,33 @@
         }
       };
     </script>
+    <script>
+      // Vérifier si le mode sombre est actif dans le localStorage
+      const darkMode = localStorage.getItem("darkMode") === "enabled";
+
+      // Appliquer le mode sombre si nécessaire
+      if (darkMode) {
+        document.body.classList.add("dark-mode");
+      }
+
+      // Fonction pour basculer le mode sombre
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+
+        // Sauvegarder la préférence
+        if (document.body.classList.contains("dark-mode")) {
+          localStorage.setItem("darkMode", "enabled");
+        } else {
+          localStorage.setItem("darkMode", null);
+        }
+      }
+
+      // Ajouter le bouton de basculement
+      const button = document.createElement("button");
+      button.className = "dark-mode-toggle";
+      button.innerHTML = "🌓";
+      button.onclick = toggleDarkMode;
+      document.body.appendChild(button);
+    </script>
   </body>
 </html>

@@ -259,122 +259,154 @@
     </main>
     <script>
       function openAddModal() {
-          document.getElementById('addModal').style.display = 'block';
+        document.getElementById("addModal").style.display = "block";
       }
 
       function closeAddModal() {
-          document.getElementById('addModal').style.display = 'none';
+        document.getElementById("addModal").style.display = "none";
       }
 
-      document.getElementById('addProjectForm').onsubmit = async function(e) {
-          e.preventDefault();
+      document.getElementById("addProjectForm").onsubmit = async function (e) {
+        e.preventDefault();
 
-          const formData = {
-              name: document.getElementById('projectName').value,
-              image: document.getElementById('projectImage').value,
-              date: document.getElementById('projectDate').value,
-              cards: []
-          };
+        const formData = {
+          name: document.getElementById("projectName").value,
+          image: document.getElementById("projectImage").value,
+          date: document.getElementById("projectDate").value,
+          cards: [],
+        };
 
-          // Récupérer les données des 25 cartes
-          for(let i = 1; i <= 25; i++) {
-              formData.cards.push({
-                  author: document.getElementById(`author${i}`).value,
-                  gold: document.getElementById(`gold${i}`).value,
-                  silver: document.getElementById(`silver${i}`).value,
-                  bronze: document.getElementById(`bronze${i}`).value
-              });
+        // Récupérer les données des 25 cartes
+        for (let i = 1; i <= 25; i++) {
+          formData.cards.push({
+            author: document.getElementById(`author${i}`).value,
+            gold: document.getElementById(`gold${i}`).value,
+            silver: document.getElementById(`silver${i}`).value,
+            bronze: document.getElementById(`bronze${i}`).value,
+          });
+        }
+
+        try {
+          const response = await fetch("/admin/projects/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+            closeAddModal();
+            location.reload();
+          } else {
+            const data = await response.json();
+            alert(data.message || "Erreur lors de la création du projet");
           }
-
-          try {
-              const response = await fetch('/admin/projects/add', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(formData)
-              });
-
-              if (response.ok) {
-                  closeAddModal();
-                  location.reload();
-              } else {
-                  const data = await response.json();
-                  alert(data.message || "Erreur lors de la création du projet");
-              }
-          } catch (error) {
-              console.error('Erreur:', error);
-              alert('Erreur lors de la création du projet');
-          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de la création du projet");
+        }
       };
 
       // Fermer la modal si on clique en dehors
-      window.onclick = function(event) {
-          if (event.target == document.getElementById('addModal')) {
-              closeAddModal();
-          }
-      }
+      window.onclick = function (event) {
+        if (event.target == document.getElementById("addModal")) {
+          closeAddModal();
+        }
+      };
 
       // Fonction générique pour gérer la saisie du temps
       function handleTimeInput(value) {
-          // Supprime tout sauf les chiffres
-          value = value.replace(/\D/g, "");
+        // Supprime tout sauf les chiffres
+        value = value.replace(/\D/g, "");
 
-          if (value.length > 0) {
-              // Minutes (maximum 59)
-              let minutes = value.substring(0, 2);
-              if (parseInt(minutes) > 59) minutes = "59";
+        if (value.length > 0) {
+          // Minutes (maximum 59)
+          let minutes = value.substring(0, 2);
+          if (parseInt(minutes) > 59) minutes = "59";
 
-              // Secondes (maximum 59)
-              let seconds = value.length > 2 ? value.substring(2, 4) : "";
-              if (parseInt(seconds) > 59) seconds = "59";
+          // Secondes (maximum 59)
+          let seconds = value.length > 2 ? value.substring(2, 4) : "";
+          if (parseInt(seconds) > 59) seconds = "59";
 
-              // Millisecondes (maximum 999)
-              let milliseconds = value.length > 4 ? value.substring(4, 7) : "";
-              if (parseInt(milliseconds) > 999) milliseconds = "999";
+          // Millisecondes (maximum 999)
+          let milliseconds = value.length > 4 ? value.substring(4, 7) : "";
+          if (parseInt(milliseconds) > 999) milliseconds = "999";
 
-              // Construction du temps formaté
-              let formattedTime = minutes;
-              if (seconds || value.length > 2) {
-                  formattedTime += ":" + seconds.padStart(2, "0");
-              }
-              if (milliseconds || value.length > 4) {
-                  formattedTime += "." + milliseconds.padEnd(3, "0");
-              }
-
-              return formattedTime;
+          // Construction du temps formaté
+          let formattedTime = minutes;
+          if (seconds || value.length > 2) {
+            formattedTime += ":" + seconds.padStart(2, "0");
           }
-          return "";
+          if (milliseconds || value.length > 4) {
+            formattedTime += "." + milliseconds.padEnd(3, "0");
+          }
+
+          return formattedTime;
+        }
+        return "";
       }
 
       // Ajout d'une fonction pour convertir le temps en millisecondes
       function timeToMilliseconds(timeStr) {
-          const matches = timeStr.match(/^(\d{2}):(\d{2})\.(\d{3})$/);
-          if (matches) {
-              const [, minutes, seconds, milliseconds] = matches;
-              return (parseInt(minutes) * 60 * 1000) + 
-                     (parseInt(seconds) * 1000) + 
-                     parseInt(milliseconds);
-          }
-          return 0;
+        const matches = timeStr.match(/^(\d{2}):(\d{2})\.(\d{3})$/);
+        if (matches) {
+          const [, minutes, seconds, milliseconds] = matches;
+          return (
+            parseInt(minutes) * 60 * 1000 +
+            parseInt(seconds) * 1000 +
+            parseInt(milliseconds)
+          );
+        }
+        return 0;
       }
 
       // Ajout d'une fonction pour convertir les millisecondes en format temps
       function millisecondsToTime(ms) {
-          const minutes = Math.floor(ms / 60000);
-          const seconds = Math.floor((ms % 60000) / 1000);
-          const milliseconds = ms % 1000;
-          
-          return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+        const minutes = Math.floor(ms / 60000);
+        const seconds = Math.floor((ms % 60000) / 1000);
+        const milliseconds = ms % 1000;
+
+        return `${minutes.toString().padStart(2, "0")}:${seconds
+          .toString()
+          .padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`;
       }
 
       // Initialisation des champs de temps
       document.addEventListener("DOMContentLoaded", function () {
-          document.querySelectorAll(".time-input").forEach(input => {
-              initializeTimeInput(input);
-          });
+        document.querySelectorAll(".time-input").forEach((input) => {
+          initializeTimeInput(input);
+        });
       });
-  </script>
+    </script>
+    <script>
+      // Vérifier si le mode sombre est actif dans le localStorage
+      const darkMode = localStorage.getItem("darkMode") === "enabled";
+
+      // Appliquer le mode sombre si nécessaire
+      if (darkMode) {
+        document.body.classList.add("dark-mode");
+      }
+
+      // Fonction pour basculer le mode sombre
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+
+        // Sauvegarder la préférence
+        if (document.body.classList.contains("dark-mode")) {
+          localStorage.setItem("darkMode", "enabled");
+        } else {
+          localStorage.setItem("darkMode", null);
+        }
+      }
+
+      // Ajouter le bouton de basculement
+      const button = document.createElement("button");
+      button.className = "dark-mode-toggle";
+      button.innerHTML = "🌓";
+      button.onclick = toggleDarkMode;
+      document.body.appendChild(button);
+    </script>
   </body>
 </html>
-``` 
+```

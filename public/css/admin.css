@@ -1,182 +1,705 @@
-/* Styles pour le tableau de bord administrateur */
+/* ==============================
+   Feuille de style admin.css
+   Design moderne et épuré
+   ============================== */
+
+/* ------------------------------
+   1. Variables globales
+   ------------------------------ */
+:root {
+  /* Couleurs principales */
+  --color-bg-light: #f5f7fa;
+  --color-bg-dark: #1e1f26;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #2a2d3b;
+  --color-primary: #3b82f6;         /* Bleu vif */
+  --color-primary-dark: #2563eb;
+  --color-secondary: #10b981;       /* Vert émeraude */
+  --color-secondary-dark: #059669;
+  --color-danger: #ef4444;          /* Rouge */
+  --color-warning: #f59e0b;         /* Jaune */
+  --color-muted: #6b7280;           /* Gris moyen */
+  --color-text-light: #1f2937;      /* Gris foncé */
+  --color-text-dark: #e5e7eb;       /* Gris clair */
+  --color-border-light: #e5e7eb;    /* Gris très clair */
+  --color-border-dark: #3f4254;     /* Gris foncé */
+  --color-hover-light: #f3f4f6;     /* Gris pâle */
+  --color-hover-dark: #3c3e4a;
+
+  /* Typographie */
+  --font-base: 'Inter', sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
+  --font-size-lg: 18px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+
+  /* Spacing & Layout */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Ombres */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-medium: 0.3s ease-in-out;
+}
+
+/* Mode sombre par défaut (sera activé via la classe .dark-mode) */
+body.dark-mode {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-dark);
+}
+
+body.dark-mode .surface {
+  background-color: var(--color-surface-dark);
+  border-color: var(--color-border-dark);
+}
+
+body.dark-mode table {
+  background-color: var(--color-bg-dark);
+  border-color: var(--color-border-dark);
+}
+
+body.dark-mode th,
+body.dark-mode td {
+  border-color: var(--color-border-dark);
+  color: var(--color-text-dark);
+}
+
+body.dark-mode .hover-bg {
+  background-color: var(--color-hover-dark);
+}
+
+body.dark-mode .text-muted {
+  color: var(--color-text-dark);
+}
+
+/* ------------------------------
+   2. Base globale
+   ------------------------------ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  scroll-behavior: smooth;
+}
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg-light);
+  color: var(--color-text-light);
+  font-family: var(--font-base);
+  line-height: 1.6;
+  transition: background-color var(--transition-medium), color var(--transition-medium);
 }
 
-/* nav bar admin */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text-light);
+  margin: var(--spacing-lg) 0 var(--spacing-md);
+  font-weight: var(--font-weight-bold);
+}
+
+p {
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-text-light);
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-primary);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ------------------------------
+   3. Conteneur principal & grille
+   ------------------------------ */
+header {
+  background-color: var(--color-surface-light);
+  padding: var(--spacing-md) var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background-color var(--transition-medium);
+}
+
+header h1 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.section-header h2 {
+  font-size: var(--font-size-lg);
+  margin: 0;
+}
+
 .admin-navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    background-color: #fdfdfd;
-    color: #fff;
-    padding: 10px 20px;
-}
-
-.admin-navbar-img {
-    width: 100px;
-    height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
 }
 
 .admin-navbar li {
-    list-style: none;
+  list-style: none;
+  margin: 0;
 }
 
-.header {
-    background: #35424a;
-    color: #ffffff;
-    padding: 10px 20px;
-    text-align: center;
+.admin-navbar-img {
+  height: 40px;
+  width: auto;
 }
 
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
+/* Grille 12 colonnes pour mise en page (responsive) */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: calc(-1 * var(--spacing-md)) 0;
 }
 
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
+.col {
+  flex: 1;
+  padding: var(--spacing-md);
 }
 
-.table th, .table td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
+@media (max-width: 768px) {
+  .col {
+    flex: 1 1 100%;
+  }
 }
 
-.table th {
-    background-color: #35424a;
-    color: white;
+/* ------------------------------
+   4. Boutons
+   ------------------------------ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  text-align: center;
 }
 
-.button {
-    background-color: #35424a;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
+.btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
-.button:hover {
-    background-color: #45a049;
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
 }
 
-.footer {
-    text-align: center;
-    padding: 20px;
-    background: #35424a;
-    color: #ffffff;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
 }
 
-/* ******* */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: #ffffff;
 }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
-    position: relative;
+.btn-secondary:hover {
+  background-color: var(--color-secondary-dark);
+  transform: translateY(-1px);
 }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    position: absolute;
-    right: 20px;
-    top: 10px;
+.btn-danger {
+  background-color: var(--color-danger);
+  color: #ffffff;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.btn-danger:hover {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
 }
 
-.event-card {
-    background: white;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.btn-warning {
+  background-color: var(--color-warning);
+  color: #ffffff;
 }
 
-.event-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
+.btn-warning:hover {
+  background-color: #b45309;
+  transform: translateY(-1px);
 }
 
-.btn-edit,
-.btn-delete,
-.btn-submit {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
+.btn-add {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  margin-top: var(--spacing-lg);
+}
+
+.btn-add:hover {
+  background-color: var(--color-primary-dark);
 }
 
 .btn-edit {
-    background-color: #3498db;
-    color: white;
+  background-color: var(--color-secondary);
+  color: #ffffff;
 }
 
-.btn-delete {
-    background-color: #e74c3c;
-    color: white;
+.btn-edit:hover {
+  background-color: var(--color-secondary-dark);
 }
 
 .btn-submit {
-    background-color: #2ecc71;
-    color: white;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  margin-top: var(--spacing-md);
 }
 
+.btn-submit:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* ------------------------------
+   5. Tableaux
+   ------------------------------ */
+.table-container {
+  background-color: var(--color-surface-light);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-medium), border-color var(--transition-medium);
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.table-container th,
+.table-container td {
+  padding: var(--spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.table-container th {
+  background-color: var(--color-hover-light);
+  font-weight: var(--font-weight-medium);
+  border-bottom-width: 2px;
+}
+
+.table-container td {
+  background-color: var(--color-surface-light);
+  color: var(--color-text-light);
+}
+
+.table-container tr:hover td {
+  background-color: var(--color-hover-light);
+}
+
+.table-container .no-data {
+  text-align: center;
+  color: var(--color-muted);
+  padding: var(--spacing-lg);
+}
+
+body.dark-mode .table-container {
+  background-color: var(--color-surface-dark);
+  border-color: var(--color-border-dark);
+}
+
+body.dark-mode .table-container table {
+  background-color: var(--color-surface-dark);
+  border-color: var(--color-border-dark);
+}
+
+body.dark-mode .table-container th {
+  background-color: var(--color-hover-dark);
+  color: var(--color-text-dark);
+  border-bottom-color: var(--color-border-dark);
+}
+
+body.dark-mode .table-container td {
+  background-color: var(--color-surface-dark);
+  color: var(--color-text-dark);
+  border-bottom-color: var(--color-border-dark);
+}
+
+body.dark-mode .table-container tr:hover td {
+  background-color: var(--color-hover-dark);
+}
+
+/* Optionnel : texte “Aucun contenu” dans le tableau */
+body.dark-mode .table-container .no-data {
+  color: var(--color-text-dark);
+  background-color: var(--color-surface-dark);
+}
+
+/* Action buttons dans table */
+.action-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.action-buttons .btn {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Badges de rôle dans members */
+.badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-medium);
+  color: #ffffff;
+  text-transform: capitalize;
+}
+
+.badge-admin {
+  background-color: var(--color-danger);
+}
+
+.badge-moderator {
+  background-color: var(--color-warning);
+}
+
+.badge-member {
+  background-color: var(--color-secondary);
+}
+
+/* ------------------------------
+   6. Cartes (Event & Project)
+   ------------------------------ */
+.event-card,
+.project-card {
+  background-color: var(--color-surface-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  transition: background-color var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.event-card:hover,
+.project-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.event-card h3,
+.project-card h3 {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-lg);
+  color: var(--color-text-light);
+}
+
+.event-card p,
+.project-card p {
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-muted);
+}
+
+.event-date {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-light);
+}
+
+/* Images dans tableau projets */
+.table-container img {
+  border-radius: var(--radius-sm);
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+/* ------------------------------
+   7. Formulaires & Inputs
+   ------------------------------ */
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+  margin-bottom: var(--spacing-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-light);
 }
 
 .form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.form-group textarea,
+.form-group select {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  color: var(--color-text-light);
+  background-color: var(--color-surface-light);
+  transition: border-color var(--transition-fast), background-color var(--transition-medium);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .form-group textarea {
-    height: 100px;
-    resize: vertical;
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Champs de saisie de temps (projects) */
+.time-input {
+  font-family: monospace;
+  text-align: center;
+  width: 100px !important;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+}
+
+/* Validation visuelle */
+input:invalid,
+textarea:invalid {
+  border-color: var(--color-danger);
+}
+
+input:valid,
+textarea:valid {
+  border-color: var(--color-secondary);
+}
+
+/* Grille spécifique (projects) */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+/* ------------------------------
+   8. Modales & Overlay
+   ------------------------------ */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(31, 41, 55, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.modal-content {
+  background-color: var(--color-surface-light);
+  border-radius: var(--radius-md);
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  transition: background-color var(--transition-medium);
+}
+
+.modal .close {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  font-size: var(--font-size-lg);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.modal .close:hover {
+  color: var(--color-text-light);
+}
+
+/* ------------------------------
+   9. Messages d’erreur & aucun contenu
+   ------------------------------ */
+.no-data {
+  display: block;
+  text-align: center;
+  padding: var(--spacing-lg);
+  color: var(--color-muted);
+}
+
+.error-message {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+}
+
+/* ------------------------------
+   10. Badges & Étiquettes
+   ------------------------------ */
+.status-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+/* Exemples : status-badge--active, status-badge--inactive, etc. */
+.status-badge--active {
+  background-color: var(--color-secondary);
+}
+
+.status-badge--disabled {
+  background-color: var(--color-muted);
+}
+
+/* ------------------------------
+   11. Liste d’événements (events.ejs)
+   ------------------------------ */
+.events-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.event-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+/* ------------------------------
+   12. Gestion de l’affichage responsive
+   ------------------------------ */
+@media (max-width: 1024px) {
+  header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .table-container th,
+  .table-container td {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .section-header h2 {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: var(--spacing-md);
+  }
+
+  .btn {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .events-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------------------
+   13. Bascule Mode Sombre
+   ------------------------------ */
+.dark-mode-toggle {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+  background-color: var(--color-surface-light);
+  border: 1px solid var(--color-border-light);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-medium), border-color var(--transition-medium);
+  z-index: 100;
+}
+
+.dark-mode .dark-mode-toggle {
+  background-color: var(--color-surface-dark);
+  border-color: var(--color-border-dark);
+}
+
+/* ------------------------------
+   14. Effets d’apparition (animations simples)
+   ------------------------------ */
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

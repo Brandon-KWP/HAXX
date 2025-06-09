@@ -142,3 +142,24 @@ exports.deleteMember = async (req, res) => {
         res.status(500).render('error', { message: 'Erreur serveur' });
     }
 };
+
+exports.getDashboard = async (req, res) => {
+    try {
+        const [events, users, projects] = await Promise.all([
+            Event.find().populate('participants'),
+            Member.find().populate('events'), // On garde Member mais on renomme la variable en users
+            Project.find()
+        ]);
+        
+        res.render('pages/admin/dashboard', {
+            events,
+            users, // On passe users au lieu de members
+            projects
+        });
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).render('pages/error', {
+            message: 'Erreur lors du chargement du tableau de bord'
+        });
+    }
+};

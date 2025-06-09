@@ -1,0 +1,33 @@
+<button class="dark-mode-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+    <i class="fas fa-sun"></i>
+    <i class="fas fa-moon"></i>
+</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+    
+    // Vérifier la préférence système
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Vérifier la préférence sauvegardée ou utiliser la préférence système
+    const savedTheme = localStorage.getItem('darkMode');
+    const isDark = savedTheme === 'enabled' || (savedTheme === null && prefersDark);
+    
+    // Appliquer le thème initial
+    if (isDark) {
+        body.classList.add('dark-mode');
+        themeToggle.classList.add('active');
+    }
+
+    // Écouteur d'événement pour le toggle
+    themeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        themeToggle.classList.toggle('active');
+        
+        const isDarkMode = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode ? 'enabled' : null);
+    });
+});
+</script>

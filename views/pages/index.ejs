@@ -1,64 +1,164 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TEAM HAXX</title>
-    <link rel="stylesheet" href="/css/custom.css" />
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEAM HAXX</title>
+  <link rel="stylesheet" href="/css/custom.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <%- include('../partials/theme-toggle') %>
     <%- include('../partials/navbar') %>
 
-    <main>
-      <h1>TEAM HAXX</h1>
-      <h2>QUI SOMME NOUS</h2>
-      <p>
-        À l'origine, la team HAXX a été créée dans le but de nous réunir entre
-        amis et passionnés de jeux vidéo, mais a commencé à prendre
-        véritablement sens dès son introduction au sein du jeu Trackmania 2020,
-        sur lequel nous avons pu créer une véritable petite communauté de
-        joueurs aux profils variés, en proposant divers projets et circuits afin
-        de nous réunir autour de supports communs en offrant différents
-        challenge aux joueurs. <br /><br />
-        C'est d'ailleurs grâce à la prise de volume du club HAXX et à sa
-        notoriété grandissante que nous avons pu organiser notre première
-        compétition officielle en Septembre 2023, en proposant grâce à l'aide de
-        nombreux membres de la communauté un challenge de 25 circuits à rouler
-        et optimiser, afin d'en obtenir les records dans un premier temps, puis
-        de se confronter les uns aux autres dans un second, avec à la clé une
-        récompense s'élevant à 500€ au total, notamment grâce à la participation
-        d'un généreux sponsor, répartis auprès des meilleurs joueurs.
-        <br /><br />
-        Aujourd'hui, l'équipe continue de gagner en notoriété, et propose
-        régulièrement des projets de plus ou moins grande ampleur en attendant
-        le lancement des prochains projets et évènements, qu'ils soient
-        compétitifs ou communautaires.
-      </p>
-    </main>
+      <main>
+        <section class="hero">
+          <div class="hero-content">
+            <h1>TEAM HAXX</h1>
+          </div>
+        </section>
+        <section class="about">
+          <div class="container">
+            <h2>QUI SOMMES-NOUS</h2>
+            <div class="about-content">
+              <div class="about-text">
+                <p>
+                  À l'origine, la team HAXX a été créée dans le but de nous réunir
+                  entre amis et passionnés de jeux vidéo, mais a commencé à
+                  prendre véritablement sens dès son introduction au sein du jeu
+                  Trackmania 2020, sur lequel nous avons pu créer une véritable
+                  petite communauté de joueurs aux profils variés, en proposant
+                  divers projets et circuits afin de nous réunir autour de
+                  supports communs en offrant différents challenge aux joueurs.
+                  <br /><br />
+                  C'est d'ailleurs grâce à la prise de volume du club HAXX et à sa
+                  notoriété grandissante que nous avons pu organiser notre
+                  première compétition officielle en Septembre 2023, en proposant
+                  grâce à l'aide de nombreux membres de la communauté un challenge
+                  de 25 circuits à rouler et optimiser, afin d'en obtenir les
+                  records dans un premier temps, puis de se confronter les uns aux
+                  autres dans un second, avec à la clé une récompense s'élevant à
+                  500€ au total, notamment grâce à la participation d'un généreux
+                  sponsor, répartis auprès des meilleurs joueurs.
+                  <br /><br />
+                  Aujourd'hui, l'équipe continue de gagner en notoriété, et
+                  propose régulièrement des projets de plus ou moins grande
+                  ampleur en attendant le lancement des prochains projets et
+                  évènements, qu'ils soient compétitifs ou communautaires.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    <%- include('../partials/footer') %>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const themeToggle = document.getElementById("theme-toggle");
-        const body = document.body;
+        <section class="featured">
+          <div class="container">
+            <h2>Événements à venir</h2>
+            <div class="slideshow-container">
+              <div class="slides-wrapper">
+                <% if (events && events.length> 0) { %> <% events.forEach(function(event, index) { %>
+                    <div class="slide" data-index="<%= index + 1 %>">
+                      <div class="featured-card">
+                        <div class="card-image">
+                          <img src="<%= event.image %>" alt="<%= event.nom %>" />
+                        </div>
+                        <div class="card-content">
+                          <h3>
+                            <%= event.nom %>
+                          </h3>
+                          <p>
+                            <%= event.date %>
+                          </p>
+                          <a href="/evenement/<%= event._id %>" class="btn btn-primary">En savoir plus</a>
+                        </div>
+                      </div>
+                    </div>
+                    <% }); %>
+                      <% } %>
+              </div>
 
-        // Vérifier la préférence sauvegardée
-        const darkMode = localStorage.getItem("darkMode");
-        if (darkMode === "enabled") {
-          body.classList.add("dark-mode");
-          themeToggle.checked = true;
-        }
+              <div class="slideshow-nav">
+                <button class="prev-btn" onclick="moveSlide(-1)">&#10094;</button>
+                <div class="slide-counter">
+                  <span id="current-slide">1</span> /
+                  <span id="total-slides">
+                    <%= events.length %>
+                  </span>
+                </div>
+                <button class="next-btn" onclick="moveSlide(1)">&#10095;</button>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        themeToggle.addEventListener("change", () => {
-          if (themeToggle.checked) {
-            body.classList.add("dark-mode");
-            localStorage.setItem("darkMode", "enabled");
-          } else {
-            body.classList.remove("dark-mode");
-            localStorage.setItem("darkMode", null);
+        <section class="projects">
+          <div class="container">
+            <h2>Nos Projets</h2>
+            <div class="swiper projects-swiper">
+              <div class="swiper-wrapper">
+                <% if (projects && projects.length> 0) { %> <% projects.forEach(function(project) { %>
+                    <div class="swiper-slide">
+                      <div class="featured-card">
+                        <div class="card-image">
+                          <img src="<%= project.image %>" alt="<%= project.name %>" />
+                        </div>
+                        <div class="card-content">
+                          <h3>
+                            <%= project.name %>
+                          </h3>
+                          <p>
+                            <%= new Date(project.date).toLocaleDateString() %>
+                          </p>
+                          <a href="/projects/<%= project._id %>" class="btn btn-primary">Découvrir</a>
+                        </div>
+                      </div>
+                    </div>
+                    <% }); %>
+                      <% } %>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <%- include('../partials/footer') %>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+        <script>
+          // Initialize Swiper
+          let currentSlide = 1;
+          const slidesWrapper = document.querySelector(".slides-wrapper");
+          const totalSlides = document.querySelectorAll(".slide").length;
+
+          function updateCounter() {
+            document.getElementById("current-slide").textContent = currentSlide;
+            document.getElementById("total-slides").textContent = totalSlides;
           }
-        });
-      });
-    </script>
-  </body>
+
+          function moveSlide(direction) {
+            currentSlide = currentSlide + direction;
+
+            if (currentSlide > totalSlides) {
+              currentSlide = 1;
+            }
+            if (currentSlide < 1) {
+              currentSlide = totalSlides;
+            }
+
+            slidesWrapper.style.transform = `translateX(-${(currentSlide - 1) * 100
+              }%)`;
+            updateCounter();
+          }
+
+          // Initialisation
+          updateCounter();
+        </script>
+</body>
+
 </html>

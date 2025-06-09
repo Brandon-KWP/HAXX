@@ -103,31 +103,40 @@
           <h2>Ajouter un événement</h2>
           <form id="addEventForm">
             <div class="form-group">
-                <label for="newTitle">Nom :</label>
-                <input type="text" id="newTitle" name="nom" required />
+              <label for="newTitle">Nom :</label>
+              <input type="text" id="newTitle" name="nom" required />
             </div>
             <div class="form-group">
-                <label for="newImage">Image (URL) :</label>
-                <input type="url" id="newImage" name="image" required />
+              <label for="newImage">Image (URL) :</label>
+              <input type="url" id="newImage" name="image" required />
             </div>
             <div class="form-group">
-                <label for="newDescription">Description :</label>
-                <textarea id="newDescription" name="description" required></textarea>
+              <label for="newDescription">Description :</label>
+              <textarea
+                id="newDescription"
+                name="description"
+                required
+              ></textarea>
             </div>
             <div class="form-group">
-                <label for="newDate">Date :</label>
-                <input type="datetime-local" id="newDate" name="date" required />
+              <label for="newDate">Date :</label>
+              <input type="datetime-local" id="newDate" name="date" required />
             </div>
             <div class="form-group">
-                <label for="newCity">Ville :</label>
-                <input type="text" id="newCity" name="ville" />
+              <label for="newCity">Ville :</label>
+              <input type="text" id="newCity" name="ville" />
             </div>
             <div class="form-group">
-                <label for="newPlaces">Places disponibles :</label>
-                <input type="number" id="newPlaces" name="places_available" min="0" />
+              <label for="newPlaces">Places disponibles :</label>
+              <input
+                type="number"
+                id="newPlaces"
+                name="places_available"
+                min="0"
+              />
             </div>
             <button type="submit" class="btn-submit">Créer l'événement</button>
-        </form>
+          </form>
         </div>
       </div>
     </main>
@@ -221,7 +230,8 @@
           description: document.getElementById("newDescription").value,
           date: document.getElementById("newDate").value,
           ville: document.getElementById("newCity").value,
-          places_available: parseInt(document.getElementById("newPlaces").value) || 0
+          places_available:
+            parseInt(document.getElementById("newPlaces").value) || 0,
         };
 
         console.log("Données à envoyer:", formData); // Pour déboguer
@@ -230,9 +240,9 @@
           const response = await fetch("/admin/events/add", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(formData),
           });
 
           console.log("Réponse reçue:", response); // Pour déboguer
@@ -259,6 +269,34 @@
           document.getElementById("addModal").style.display = "none";
         }
       };
+    </script>
+    <script>
+      // Vérifier si le mode sombre est actif dans le localStorage
+      const darkMode = localStorage.getItem("darkMode") === "enabled";
+
+      // Appliquer le mode sombre si nécessaire
+      if (darkMode) {
+        document.body.classList.add("dark-mode");
+      }
+
+      // Fonction pour basculer le mode sombre
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+
+        // Sauvegarder la préférence
+        if (document.body.classList.contains("dark-mode")) {
+          localStorage.setItem("darkMode", "enabled");
+        } else {
+          localStorage.setItem("darkMode", null);
+        }
+      }
+
+      // Ajouter le bouton de basculement
+      const button = document.createElement("button");
+      button.className = "dark-mode-toggle";
+      button.innerHTML = "🌓";
+      button.onclick = toggleDarkMode;
+      document.body.appendChild(button);
     </script>
   </body>
 </html>

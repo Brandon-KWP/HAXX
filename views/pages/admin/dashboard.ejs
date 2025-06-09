@@ -1,35 +1,241 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/admin.css">
-    <title>Tableau de Bord Administrateur</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <title>Tableau de Bord Administrateur</title>
 </head>
+
 <body>
-    <header>
-        <%- include('../../partials/navbar-admin') %>
-        <h1>Tableau de Bord Administrateur</h1>
-    </header>
-    <main>
-        <section>
-            <h2>Aperçu des Événements</h2>
-            <div id="events-overview">
-                <!-- Liste des événements à afficher ici -->
-            </div>
-        </section>
-        <section>
-            <h2>Aperçu des Projets</h2>
-            <div id="projects-overview">
-                <!-- Liste des projets à afficher ici -->
-            </div>
-        </section>
-        <section>
-            <h2>Aperçu des Membres</h2>
-            <div id="members-overview">
-                <!-- Liste des membres à afficher ici -->
-            </div>
-        </section>
-    </main>
+  <header>
+    <%- include('../../partials/navbar-admin') %>
+
+  </header>
+
+  <main>
+    <h1>Tableau de Bord Administrateur</h1>
+    <section>
+      <h2>Aperçu des Événements</h2>
+      <div id="events-overview">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Date</th>
+                <th>Ville</th>
+                <th>Places disponibles</th>
+                <th>Participants</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (events && events.length> 0) { %> <% events.forEach(function(event) { %>
+                  <tr>
+                    <td>
+                      <%= event.nom %>
+                    </td>
+                    <td>
+                      <%= event.date %>
+                    </td>
+                    <td>
+                      <%= event.ville || 'Non spécifié' %>
+                    </td>
+                    <td>
+                      <%= event.places_available || 'Illimité' %>
+                    </td>
+                    <td>
+                      <%= event.participants.length %>
+                    </td>
+                  </tr>
+                  <% }); %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="6" class="no-data">Aucun événement trouvé</td>
+                      </tr>
+                      <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Aperçu des Projets</h2>
+      <div id="projects-overview">
+        <table class="table-container">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Image</th>
+              <th>Date</th>
+              <th>Nombre de cartes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (projects && projects.length> 0) { %> <% projects.forEach(function(project) { %>
+                <tr>
+                  <td>
+                    <%= project.name %>
+                  </td>
+                  <td>
+                    <img src="<%= project.image %>" alt="<%= project.name %>" style="width: 50px; height: 50px" />
+                  </td>
+                  <td>
+                    <%= new Date(project.date).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <%= project.cards.length %>
+                  </td>
+                </tr>
+                <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5" class="no-data">Aucun projet trouvé</td>
+                    </tr>
+                    <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Aperçu des Membres</h2>
+      <div id="members-overview">
+        <table class="table-container">
+          <thead>
+            <tr>
+              <th>Pseudo</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Discord</th>
+              <th>Ubisoft</th>
+              <th>Événements</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (members && members.length> 0) { %> <% members.forEach(function(member) { %>
+                <tr>
+                  <td>
+                    <%= member.pseudo %>
+                  </td>
+                  <td>
+                    <%= member.email %>
+                  </td>
+                  <td>
+                    <span class="badge badge-<%= member.role %>">
+                      <%= member.role %>
+                    </span>
+                  </td>
+                  <td>
+                    <%= member.pseudo_discord %>
+                  </td>
+                  <td>
+                    <%= member.pseudo_ubisoft %>
+                  </td>
+                  <td>
+                    <%= member.events.length %>
+                  </td>
+                </tr>
+                <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="7" class="no-data">Aucun membre trouvé</td>
+                    </tr>
+                    <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    async function deleteEvent(eventId) {
+      if (confirm("Êtes-vous sûr de vouloir supprimer cet événement ?")) {
+        try {
+          const response = await fetch(`/admin/events/${eventId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert("Erreur lors de la suppression");
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de la suppression");
+        }
+      }
+    }
+    async function deleteProject(projectId) {
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
+        try {
+          const response = await fetch(`/admin/projects/${projectId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert("Erreur lors de la suppression");
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de la suppression");
+        }
+      }
+    }
+
+    async function deleteMember(memberId) {
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce membre ?")) {
+        try {
+          const response = await fetch(`/admin/members/${memberId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert("Erreur lors de la suppression");
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de la suppression");
+        }
+      }
+    }
+  </script>
+  <script>
+    // Vérifier si le mode sombre est actif dans le localStorage
+    const darkMode = localStorage.getItem("darkMode") === "enabled";
+
+    // Appliquer le mode sombre si nécessaire
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    }
+
+    // Fonction pour basculer le mode sombre
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+
+      // Sauvegarder la préférence
+      if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("darkMode", "enabled");
+      } else {
+        localStorage.setItem("darkMode", null);
+      }
+    }
+
+    // Ajouter le bouton de basculement
+    const button = document.createElement("button");
+    button.className = "dark-mode-toggle";
+    button.innerHTML = "🌓";
+    button.onclick = toggleDarkMode;
+    document.body.appendChild(button);
+  </script>
 </body>
+
 </html>
