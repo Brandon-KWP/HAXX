@@ -347,7 +347,7 @@ body.dark-mode .table-container {
   background-color: var(--color-surface-dark);
   border-color: var(--color-border-dark);
 }
-
+ 
 body.dark-mode .table-container table {
   background-color: var(--color-surface-dark);
   border-color: var(--color-border-dark);

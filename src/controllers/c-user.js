@@ -29,7 +29,7 @@ exports.getProfile = async (req, res) => {
         });
     }
 };
-
+ 
 exports.getEditProfile = async (req, res) => {
     try {
         const user = await User.findById(req.session.user.id);

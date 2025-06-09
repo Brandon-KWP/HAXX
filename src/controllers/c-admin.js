@@ -61,7 +61,7 @@ exports.addEvent = async (req, res) => {
         });
     }
 };
-
+ 
 exports.editEvent = async (req, res) => {
     try {
         const updatedEvent = await Event.findByIdAndUpdate(

@@ -67,7 +67,7 @@ exports.postRegister = async (req, res) => {
     const userExists = await User.findOne({
       $or: [{ email }, { pseudo_ubisoft }, { pseudo_discord }],
     });
-
+ 
     if (userExists) {
       return res.status(400).json({
         message: "Cet email ou pseudo est déjà utilisé",

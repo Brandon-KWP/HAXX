@@ -20,7 +20,7 @@ exports.getNotifications = async (req, res) => {
                     path: 'event',
                     model: 'Event'
                 }
-            });
+            }); 
 
         if (!user) {
             return res.status(404).render('error', {

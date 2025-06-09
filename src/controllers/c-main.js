@@ -16,7 +16,7 @@ exports.getHome = async (req, res) => {
             Event.find().sort({ date: 1 }).limit(5),
             Project.find().sort({ date: -1 }).limit(5)
         ]);
-
+ 
         res.render('index', {  // Modifié ici
             events,
             projects,

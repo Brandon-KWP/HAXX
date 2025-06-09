@@ -19,7 +19,7 @@ exports.addProject = async (req, res) => {
         });
 
         await newProject.save();
-
+ 
         res.status(201).json({ 
             message: "Projet créé avec succès",
             project: newProject

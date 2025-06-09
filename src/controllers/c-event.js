@@ -105,7 +105,7 @@ exports.registerForEvent = async (req, res) => {
                 message: "Événement ou utilisateur non trouvé",
             });
         }
-
+ 
         if (event.places_available <= 0) {
             return res.status(400).json({ message: "Plus de places disponibles" });
         }
